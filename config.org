@@ -1,4 +1,12 @@
 * Interface Tweaks
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-splash-screen t)
+  (setq inhibit-startup-message t)
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  (setq ring-bell-function 'ignore)
+  (setq vc-follow-symlinks t)
+  (setq sentence-end-double-space nil)
+#+END_SRC
 ** Load newer bytecode
 #+BEGIN_SRC emacs-lisp
   (setq load-prefer-newer t)
@@ -20,23 +28,53 @@
 
 ** Highlight current line
 #+BEGIN_SRC emacs-lisp
-  (global-hl-line-mode t)
+  (when window-system
+    (global-hl-line-mode t))
 #+END_SRC
-** Hungry Delete
-#+BEGIN_SRC emacs-lisp
-   ; deletes all the whitespace when you hit backspace or delete
-    (use-package hungry-delete
-    :ensure t
-    :config
-    (global-hungry-delete-mode))
-#+END_SRC
-** Beacon mode - flashes cursor whenever you scroll
+* Minor Packages
 #+BEGIN_SRC emacs-lisp
   (use-package beacon
-  :ensure t
-  :config
-  (beacon-mode 1)
+    :ensure t
+    :config (beacon-mode 1))
+
+  (use-package hungry-delete
+    :ensure t
+    :config (global-hungry-delete-mode))
 #+END_SRC
+** Smart Parentheses
+#+BEGIN_SRC emacs-lisp
+    (use-package smartparens
+    :ensure t
+    :diminish smartparens-mode
+    :config
+    (add-hook 'prog-mode-hook 'smartparens-mode))
+
+
+ (add-hook 'prog-mode-hook 'electric-pair-mode)
+#+END_SRC
+
+** Rainbow Delimiters
+#+BEGIN_SRC emacs-lisp
+    (use-package rainbow-delimiters
+    :ensure t
+    :config
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+#+END_SRC
+
+** Highlight colors
+#+BEGIN_SRC emacs-lisp
+   (use-package rainbow-mode
+    :ensure t
+    :config
+    (setq rainbow-x-colors nil)
+    (add-hook 'prog-mode-hook 'rainbow-mode))
+#+END_SRC
+** Indentation help
+#+BEGIN_SRC emacs-lisp
+   (use-package aggressive-indent
+      :ensure t)
+#+END_SRC
+
 * Magit - git magic
 #+BEGIN_SRC emacs-lisp
   (use-package magit
@@ -138,6 +176,13 @@
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 #+END_SRC
 * Programming
+** Fuzzy Search
+#+BEGIN_SRC emacs-lisp
+  (use-package fzf
+    :ensure t
+    :bind 
+    ("C-p" . fzf))
+#+END_SRC
 ** YasSnippets
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
@@ -152,6 +197,13 @@
     :init
     (global-flycheck-mode t))
 
+  ;; Elixir support with credo
+  (use-package flycheck-credo
+    :ensure t)
+
+  (eval-after-load 'flycheck
+    '(flycheck-credo-setup))
+  (add-hook 'elixir-mode-hook 'flycheck-mode)
 #+END_SRC
 ** Company Mode - Autocompletion
 #+BEGIN_SRC emacs-lisp
@@ -196,6 +248,7 @@
 
   (use-package alchemist
     :ensure t)
+  (setq alchemist-hooks-compile-on-save t)
 #+END_SRC
 ** Python
 #+BEGIN_SRC emacs-lisp
@@ -210,4 +263,9 @@
     :ensure t)
 
   (load-theme 'dracula t)
+#+END_SRC
+* Keybindings
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map (kbd "C-1") 'text-scale-increase)
+  (define-key global-map (kbd "C-0") 'text-scale-decrease)
 #+END_SRC
