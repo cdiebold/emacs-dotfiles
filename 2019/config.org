@@ -1,0 +1,312 @@
+* Interface Tweaks
+ #+BEGIN_SRC emacs-lisp
+   (defalias 'yes-or-no-p 'y-or-n-p)
+ #+END_SRC
+** UTF-8
+#+BEGIN_SRC emacs-lisp
+  ;; set the default encoding system
+  (prefer-coding-system 'utf-8)
+  (setq default-file-name-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+#+END_SRC
+** Backups
+#+BEGIN_SRC emacs-lisp
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)
+  (setq create-lockfiles nil)
+#+END_SRC
+** Toolbar 
+#+BEGIN_SRC emacs-lisp
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+
+(setq ring-bell-function 'ignore)
+
+#+END_SRC
+** Pretty Symbols
+#+BEGIN_SRC emacs-lisp
+  (when window-system
+	(use-package pretty-mode
+	:ensure t
+	:config
+	(global-pretty-mode t)))
+#+END_SRC
+** Ibuffer 
+#+BEGIN_SRC emacs-lisp
+  (defalias 'list-buffers 'ibuffer) ; make ibuffer default
+#+END_SRC
+** Windmove
+#+BEGIN_SRC emacs-lisp
+  (windmove-default-keybindings)
+#+END_SRC
+* Terminal
+  #+BEGIN_SRC emacs-lisp
+    (defvar my-term-shell "/bin/bash")
+    (defadvice ansi-term (before force-bash)
+      (interactive (list my-term-shell)))
+    (ad-activate 'ansi-term)
+  #+END_SRC
+* General Packages
+** Which key
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+	       :ensure t
+	       :init
+	       (which-key-mode))
+#+END_SRC
+** Try
+#+BEGIN_SRC emacs-lisp
+  (use-package try
+	       :ensure t)
+#+END_SRC
+** Ace-window
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :ensure t
+    :init
+    (global-set-key [remap other-window] 'ace-window)
+    (custom-set-faces
+     '(aw-leading-char-face
+       ((t (:inherit ace-jump-face-foreground :height 3.0))))))
+#+END_SRC
+** Swiper
+#+BEGIN_SRC emacs-lisp
+  ;; Swiper has a few dependencies that must be installed first
+  (use-package ivy
+    :ensure t
+    :init
+    (ivy-mode 1))
+
+  (use-package counsel
+    :ensure t)
+
+  (use-package swiper
+    :ensure t)
+#+END_SRC
+** Avy
+#+BEGIN_SRC emacs-lisp
+  (use-package avy
+  :ensure t)
+#+END_SRC
+** Rainbow delimiters
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :ensure t
+    :init
+    (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+#+END_SRC
+** Projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :init
+      (projectile-mode 1))
+#+END_SRC
+** SpaceLine
+#+BEGIN_SRC emacs-lisp
+  (use-package spaceline
+    :ensure t
+    :config
+    (require 'spaceline-config)
+      (setq spaceline-buffer-encoding-abbrev-p nil)
+      (setq spaceline-line-column-p nil)
+      (setq spaceline-line-p nil)
+      (setq powerline-default-separator (quote arrow))
+      (spaceline-spacemacs-theme))
+#+END_SRC
+** Beacon mode
+#+BEGIN_SRC emacs-lisp
+  (use-package beacon
+    :ensure t
+    :config
+      (beacon-mode 1))
+#+END_SRC
+** Hungry Delete
+#+BEGIN_SRC emacs-lisp
+  (use-package hungry-delete
+    :ensure t
+    :config
+      (global-hungry-delete-mode))
+
+
+#+END_SRC
+** Rainbow colors 
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-mode
+    :ensure t
+    :init
+      (add-hook 'prog-mode-hook 'rainbow-mode))
+#+END_SRC
+** Neotree
+#+BEGIN_SRC emacs-lisp
+  (use-package neotree
+    :ensure t)
+(global-set-key [f8] 'neotree-toggle)
+#+END_SRC
+** Helm
+#+BEGIN_SRC emacs-lisp
+  (use-package helm
+    :ensure t
+    :config
+    (require 'helm-config)
+    (helm-mode 1))
+#+END_SRC
+** Projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :config
+    (projectile-global-mode)
+    (setq projectile-completion-system 'helm)
+    (helm-projectile-on))
+#+END_SRC
+** Helm-projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-projectile
+    :ensure t)
+#+END_SRC
+** Editor Config
+#+BEGIN_SRC emacs-lisp
+  (use-package editorconfig
+    :ensure t
+    :config
+    (editorconfig-mode 1))
+#+END_SRC
+* Programming Languages
+** Emacs Lisp
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
+  (add-hook 'emacs-lisp-mode-hook 'yas-minor-mode)
+  (add-hook 'emacs-lisp-mode-hook 'company-mode)
+
+  (use-package slime
+    :ensure t
+    :config
+    (setq inferior-lisp-program "/usr/bin/sbcl")
+    (setq slime-contribs '(slime-fancy)))
+
+  (use-package slime-company
+    :ensure t
+    :init
+      (require 'company)
+      (slime-setup '(slime-fancy slime-company)))
+#+END_SRC
+** Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :config
+    (setq magit-push-always-verify nil)
+    (setq git-commit-summary-max-length 50)
+    :bind
+    ("M-g" . magit-status))
+#+END_SRC
+** Clojure
+#+BEGIN_SRC emacs-lisp
+  (use-package clojure-mode
+    :ensure t)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package cider
+    :ensure t)
+#+END_SRC
+** Elixir and Erlang
+#+BEGIN_SRC emacs-lisp
+  (use-package erlang
+    :ensure t)
+
+  (use-package erlang-mode
+    :ensure t)
+
+  (use-package elixir-mode
+    :ensure t)
+
+  (use-package alchemist
+    :ensure t)
+#+END_SRC
+** Yasnipppet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :config
+      (use-package yasnippet-snippets
+	:ensure t)
+      (yas-reload-all))
+#+END_SRC
+** Flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t)
+#+END_SRC
+** Company autocompletion
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :init
+    (global-company-mode)
+    :config
+    (setq company-idle-delay 0)
+    (setq company-minimum-prefix-length 3)
+    (add-hook 'cider-repl-mode-hook #'cider-company-enable-fuzzy-completion)
+    (add-hook 'cider-mode-hook #'cider-company-enable-fuzzy-completion))
+
+#+END_SRC
+* Org
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :ensure t
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook
+	      '(lambda ()
+		 (visual-line-mode 1)))
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (use-package ox-twbs
+    :ensure t)
+#+END_SRC
+* Themes
+#+BEGIN_SRC emacs-lisp
+  (use-package spacemacs-theme
+    :ensure t)
+
+  (use-package material-theme
+    :ensure t)
+
+  (use-package darktooth-theme
+    :ensure t)
+
+  (use-package gotham-theme
+    :ensure t)
+#+END_SRC
+
+** Current Theme
+#+BEGIN_SRC emacs-lisp
+  (load-theme 'gotham t)
+#+END_SRC
+* Keybindings
+#+BEGIN_SRC emacs-lisp
+  (global-set-key "\C-s" 'swiper)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "M-s") 'avy-goto-char)
+#+END_SRC
+
+Find my config
+#+BEGIN_SRC emacs-lisp
+  (defun config-visit ()
+    (interactive)
+    (find-file "~/.emacs.d/config.org"))
+  (global-set-key (kbd "C-c I") 'config-visit)
+
+(defun config-reload ()
+  "Reloads ~/.emacs.d/config.org at runtime"
+  (interactive)
+  (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+(global-set-key (kbd "C-c R") 'config-reload)
+#+END_SRC
